@@ -1,36 +1,30 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routes.review import router as review_router
+from dotenv import load_dotenv
+import os
 
-from backend.api.routes import router as api_router
-from backend.config import settings
-
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI(
-    title="AI Code Review Tool",
-    version="0.1.0",
-    description="Backend API for AI-powered code analysis.",
+    title="AI Code Review API",
+    description="Backend for AI-powered Code Review web application using Google Gemini API.",
+    version="1.0.0"
 )
 
-# CORS for local frontend development
+# Enable CORS for frontend integration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOW_ORIGINS,
+    allow_origins=["*"],  # Adjust this to point to your specific frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Include API routes
+app.include_router(review_router, prefix="/api")
 
-@app.get("/health")
-async def health_check() -> dict:
-    return {"status": "ok"}
-
-
-app.include_router(api_router, prefix="/")
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
-
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the AI Code Review API. Use POST /api/review or POST /api/review-repo to analyze code."}
