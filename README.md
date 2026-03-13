@@ -1,6 +1,6 @@
-## AI Code Review Tool
+## AI Code Reviewer
 
-Minimal starter project for an AI-powered code review system built for hackathon-style experimentation.
+AI Code Reviewer is an intelligent tool that analyzes source code to detect logical bugs, inefficient algorithms, and potential security vulnerabilities. Using AI and rule-based analysis, it provides smart suggestions to improve code quality, performance, and reliability, helping developers debug faster and build more secure software.
 
 ### Tech Stack
 
@@ -39,4 +39,3 @@ Serve `frontend/` with any static file server (e.g., VS Code Live Server, `pytho
 - Implement real parsing in `backend/parsers/`
 - Add richer static analysis in `backend/services/`
 - Connect an LLM in `backend/services/ai_reviewer.py` using your provider’s SDK and API key (configured via environment variables).
-
