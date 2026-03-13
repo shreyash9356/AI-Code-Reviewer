@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import CodeEditor from './CodeEditor';
 import AnalysisPanel from './AnalysisPanel';
+import Settings from './Settings';
 import { Play, UploadCloud } from 'lucide-react';
 
 const Dashboard = () => {
@@ -31,13 +32,18 @@ const Dashboard = () => {
     setResults(null);
     
     try {
+      const storedApiKey = localStorage.getItem('gemini_api_key');
       const response = await fetch('http://127.0.0.1:8000/api/review', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ code, language })
+        body: JSON.stringify({ 
+          code, 
+          language,
+          ...(storedApiKey && { api_key: storedApiKey })
+        })
       });
       
       if (!response.ok) {
@@ -88,32 +94,38 @@ const Dashboard = () => {
            </button>
         </header>
 
-        <div className="flex-1 flex gap-6 min-h-0">
-           {/* Left Editor */}
-           <div className="flex-1 flex flex-col min-w-0">
-              <div className="flex items-center justify-between px-4 py-2 bg-panel border border-b-0 border-gray-800 rounded-t-xl">
-                 <span className="text-xs font-mono text-gray-400">main.{language === 'python' ? 'py' : language === 'javascript' ? 'js' : language === 'cpp' ? 'cpp' : 'java'}</span>
-                 <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-error"></div>
-                    <div className="w-3 h-3 rounded-full bg-warning"></div>
-                    <div className="w-3 h-3 rounded-full bg-success"></div>
-                 </div>
-              </div>
-              <div className="flex-1 border border-gray-800 rounded-b-xl overflow-hidden relative shadow-lg">
-                 <CodeEditor 
-                   code={code} 
-                   setCode={setCode} 
-                   language={language}
-                   issues={results?.issues}
-                 />
-              </div>
-           </div>
-           
-           {/* Right Panel */}
-           <div className="w-[450px] flex-shrink-0 bg-panel border border-gray-800 rounded-xl p-6 shadow-lg flex flex-col min-h-0">
-             <AnalysisPanel results={results} loading={loading} />
-           </div>
-        </div>
+        {activeTab === 'settings' ? (
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto w-full custom-scrollbar">
+            <Settings />
+          </div>
+        ) : (
+          <div className="flex-1 flex gap-6 min-h-0">
+             {/* Left Editor */}
+             <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex items-center justify-between px-4 py-2 bg-panel border border-b-0 border-gray-800 rounded-t-xl">
+                   <span className="text-xs font-mono text-gray-400">main.{language === 'python' ? 'py' : language === 'javascript' ? 'js' : language === 'cpp' ? 'cpp' : 'java'}</span>
+                   <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-error"></div>
+                      <div className="w-3 h-3 rounded-full bg-warning"></div>
+                      <div className="w-3 h-3 rounded-full bg-success"></div>
+                   </div>
+                </div>
+                <div className="flex-1 border border-gray-800 rounded-b-xl overflow-hidden relative shadow-lg">
+                   <CodeEditor 
+                     code={code} 
+                     setCode={setCode} 
+                     language={language}
+                     issues={results?.issues}
+                   />
+                </div>
+             </div>
+             
+             {/* Right Panel */}
+             <div className="w-[450px] flex-shrink-0 bg-panel border border-gray-800 rounded-xl p-6 shadow-lg flex flex-col min-h-0">
+               <AnalysisPanel results={results} loading={loading} />
+             </div>
+          </div>
+        )}
       </main>
     </div>
   );

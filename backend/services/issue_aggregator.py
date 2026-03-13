@@ -5,7 +5,7 @@ from services.security_scanner import scan_security
 from ai_engine.gemini_reviewer import analyze_code_with_ai
 from scoring.code_score import calculate_score
 
-async def aggregate_issues(code: str, language: str) -> dict:
+async def aggregate_issues(code: str, language: str, api_key: str = None) -> dict:
     """
     Combines issues from all static analysis modules and the Gemini AI engine.
     Returns a unified response.
@@ -21,7 +21,7 @@ async def aggregate_issues(code: str, language: str) -> dict:
     
     # 2. Call AI asynchronously for suggestions
     # We pass the static issues so the AI knows what we've already found, saving token generation
-    ai_response = await analyze_code_with_ai(code, language)
+    ai_response = await analyze_code_with_ai(code, language, api_key)
     
     # The AI response contains 'bugs', 'security_issues', 'suggestions'
     # We consolidate them. For AI-generated bugs we don't have exact line numbers easily, but we can append them

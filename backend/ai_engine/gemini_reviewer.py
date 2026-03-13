@@ -3,18 +3,18 @@ import json
 import google.generativeai as genai
 from fastapi import HTTPException
 
-def configure_gemini():
-    api_key = os.getenv("GEMINI_API_KEY")
+def configure_gemini(user_api_key: str = None):
+    api_key = user_api_key or os.getenv("GEMINI_API_KEY")
     if not api_key or api_key == "your_gemini_api_key_here" or api_key == "your_actual_gemini_api_key_here":
-        raise ValueError("GEMINI_API_KEY is not configured. Please add your actual API key to the .env file.")
+        raise ValueError("GEMINI_API_KEY is not configured and no user key was provided. Please add your actual API key to the .env file or Settings page.")
     genai.configure(api_key=api_key)
 
-async def analyze_code_with_ai(code: str, language: str) -> dict:
+async def analyze_code_with_ai(code: str, language: str, api_key: str = None) -> dict:
     """
     Analyzes code using Google Gemini AI and returns a structured JSON response.
     """
     try:
-        configure_gemini()
+        configure_gemini(api_key)
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
 

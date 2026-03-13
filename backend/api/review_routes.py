@@ -9,9 +9,11 @@ router = APIRouter()
 class CodeReviewRequest(BaseModel):
     code: str
     language: str
+    api_key: Optional[str] = None
 
 class RepoReviewRequest(BaseModel):
     github_url: str
+    api_key: Optional[str] = None
 
 class ReviewResponse(BaseModel):
     code_health_score: int
@@ -28,7 +30,7 @@ async def review_code(request: CodeReviewRequest):
         if not request.code.strip():
             raise HTTPException(status_code=400, detail="Code cannot be empty.")
             
-        result = await aggregate_issues(request.code, request.language)
+        result = await aggregate_issues(request.code, request.language, request.api_key)
         
         validated_result = ReviewResponse(**result)
         return validated_result
@@ -52,7 +54,7 @@ async def review_repo(request: RepoReviewRequest):
         for file_path, content in files_content.items():
             combined_code += f"\n\n--- File: {file_path} ---\n{content}"
             
-        result = await aggregate_issues(combined_code, "multiple files")
+        result = await aggregate_issues(combined_code, "multiple files", request.api_key)
         
         validated_result = ReviewResponse(**result)
         return validated_result
