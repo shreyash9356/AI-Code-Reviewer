@@ -1,46 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Code Reviewer</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Review Tool</title>
+    <!-- Modern developer font for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <header class="header">
-      <h1>AI Code Review Tool</h1>
-      <p>Paste your code below and let the AI analyze it for bugs, performance issues, and security risks.</p>
-    </header>
+    <div class="app-container">
+        <!-- 1. Header Section -->
+        <header class="header">
+            <div class="header-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="m10 13-2 2 2 2"></path><path d="m14 17 2-2-2-2"></path></svg>
+                <h1>AI Code Review Tool</h1>
+            </div>
+            <p class="header-desc">Paste your code below and let the AI analyze it for bugs, performance issues, and security vulnerabilities.</p>
+        </header>
 
-    <main class="main">
-      <section class="input-panel">
-        <label for="language">Language</label>
-        <select id="language">
-          <option value="python">Python</option>
-          <option value="javascript">JavaScript</option>
-          <option value="java">Java</option>
-        </select>
+        <!-- 2. Main Layout (Split Screen) -->
+        <main class="main-layout">
+            <!-- LEFT PANEL -->
+            <section class="panel left-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg>
+                        <h2>Source Code</h2>
+                    </div>
+                    <div class="lang-selector">
+                        <select id="language-select">
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="java">Java</option>
+                        </select>
+                    </div>
+                </div>
 
-        <label for="code">Source Code</label>
-        <textarea id="code" placeholder="Paste your code here..."></textarea>
+                <div class="editor-wrapper" id="editor-wrapper">
+                    <!-- Line-number style textarea -->
+                    <div class="line-numbers" id="line-numbers">1</div>
+                    <textarea id="code-input" placeholder="Paste your code here..." spellcheck="false" wrap="off"></textarea>
+                </div>
 
-        <button id="analyze-btn">Analyze Code</button>
-        <p id="status" class="status"></p>
-      </section>
+                <div class="panel-footer">
+                    <button id="analyze-btn" class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        Analyze Code
+                    </button>
+                    <!-- Status message area -->
+                    <div id="status-message" class="status-text hidden">Ready</div>
+                </div>
+            </section>
 
-      <section class="output-panel">
-        <h2>Analysis Results</h2>
-        <pre id="results" class="results"></pre>
-      </section>
-    </main>
+            <!-- RIGHT PANEL -->
+            <section class="panel right-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                        <h2>Analysis Results</h2>
+                    </div>
+                </div>
 
-    <footer class="footer">
-      <small>Built with FastAPI and an LLM backend. Starter template for hackathons.</small>
-    </footer>
-  </div>
+                <!-- 4. Code Quality Score Header (Hidden initially) -->
+                <div id="score-header" class="score-header hidden">
+                    <div class="score-label">Code Quality Score</div>
+                    <div class="score-bar-container">
+                        <div class="score-bar" id="score-bar"></div>
+                    </div>
+                    <div class="score-value" id="score-value">0/10</div>
+                </div>
 
-  <script src="script.js"></script>
+                <!-- Results Content -->
+                <div class="results-content" id="results-content">
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <p>Awaiting code input</p>
+                        <p class="sub-text">Results will appear here once the analysis is complete.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 8. File Structure inclusion -->
+    <script src="script.js"></script>
 </body>
 </html>
-
