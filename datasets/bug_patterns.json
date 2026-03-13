@@ -1,0 +1,11 @@
+{
+  "patterns": [
+    {
+      "id": "py-eq-none",
+      "language": "python",
+      "description": "Use 'is None' instead of '== None'.",
+      "severity": "warning"
+    }
+  ]
+}
+
