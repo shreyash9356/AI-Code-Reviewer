@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Sidebar from './Sidebar';
 import CodeEditor from './CodeEditor';
 import AnalysisPanel from './AnalysisPanel';
@@ -24,6 +24,50 @@ const Dashboard = () => {
 `);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setCode(e.target.result);
+      
+      // Auto-detect language from extension
+      const extension = file.name.split('.').pop().toLowerCase();
+      const extMap = {
+        'py': 'python',
+        'js': 'javascript',
+        'jsx': 'javascript',
+        'ts': 'typescript',
+        'tsx': 'typescript',
+        'java': 'java',
+        'cpp': 'cpp',
+        'c': 'c',
+        'cc': 'cpp',
+        'h': 'cpp',
+        'cs': 'c#',
+        'rb': 'ruby',
+        'go': 'go',
+        'php': 'php',
+        'swift': 'swift',
+        'rs': 'rust',
+        'html': 'html',
+        'css': 'css',
+        'sql': 'sql',
+        'sh': 'bash',
+      };
+      
+      if (extMap[extension]) {
+         setLanguage(extMap[extension]);
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset the input so the exact same file can be uploaded again if needed
+    event.target.value = '';
+  };
 
   const handleAnalyze = async () => {
     if (!code.trim()) return;
@@ -78,10 +122,20 @@ const Dashboard = () => {
                <option value="cpp">C++</option>
              </select>
              
-             <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-700">
+             <button 
+               onClick={() => fileInputRef.current.click()}
+               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-700"
+             >
                <UploadCloud size={16} />
                Upload File
              </button>
+             <input 
+               type="file" 
+               ref={fileInputRef} 
+               onChange={handleFileUpload} 
+               className="hidden" 
+               accept=".py,.js,.jsx,.ts,.tsx,.java,.c,.cpp,.h,.cs,.rb,.go,.php,.swift,.rs,.html,.css,.sql,.sh"
+             />
            </div>
            
            <button 
